@@ -1,20 +1,27 @@
 import { createClient } from '@bigcommerce/catalyst-client';
+import { CatalystContext } from '../context';
+import { defaultLocale } from '@bigcommerce/catalyst-core/i18n/routing';
 
 const clients: Record<number, any> = {};
 
-const getClient = async (channelId: number = 1) => {
-    if (!clients[channelId]) {
-        clients[channelId] = createClient({
+Cypress.Commands.add('getClient', (ctx?: CatalystContext) => {
+    if (ctx === undefined) {
+        ctx = {
+            channelId: '1',
+            locale: defaultLocale,
+        };
+    }
+
+    if (!clients[ctx.channelId]) {
+        clients[ctx.channelId] = createClient({
             storefrontToken: Cypress.env('BIGCOMMERCE_STOREFRONT_TOKEN') ?? '',
             xAuthToken: Cypress.env('BIGCOMMERCE_ACCESS_TOKEN') ?? '',
             storeHash: Cypress.env('BIGCOMMERCE_STORE_HASH') ?? '',
-            channelId: channelId.toString(),
+            channelId: ctx.channelId,
             backendUserAgentExtensions: 'cypress',
             logger: true,
         });
     }
 
-    return clients[channelId];
-};
-
-export default getClient;
+    return clients[ctx.channelId];
+});

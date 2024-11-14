@@ -1,30 +1,27 @@
-import getClient from './get-client';
-import { graphql } from './graphql';
+import { graphql } from '@bigcommerce/catalyst-core/client/graphql';
+import { CatalystContext } from '../context';
+import { ProductFragment } from './fragments/product';
 
 const NewestProductsQuery = graphql(`
-    query NewestProductsQuery {
+    query NewestProducts {
         site {
             newestProducts {
                 edges {
                     node {
-                        sku
-                        name
-                        path
+                        ...ProductFragment
                     }
                 }
             }
         }
     }
-`);
+`, [ProductFragment]);
 
-const getRecentProducts = async () => {
-    const client = await getClient();
+Cypress.Commands.add('getRecentProducts', (ctx?: CatalystContext) => {
+    cy.getClient(ctx).then(async (client) => {
+        const { data } = await client.fetch({
+            document: NewestProductsQuery,
+        });
 
-    const { data } = await client.fetch({
-        document: NewestProductsQuery,
+        return data.site.newestProducts.edges.map(({ node }) => node);
     });
-
-    return data.site.newestProducts.edges.map(({ node }) => node);
-};
-
-export default getRecentProducts;
+});

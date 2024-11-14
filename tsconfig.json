@@ -1,11 +1,16 @@
 {
-  "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "esModuleInterop": true,
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "node"],
-    "allowSyntheticDefaultImports": true
-  },
-  "include": ["**/*.ts"]
+    "compilerOptions": {
+        "target": "es5",
+        "module": "NodeNext",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "lib": ["es5", "dom"],
+        "types": ["cypress", "node"],
+        "allowSyntheticDefaultImports": true,
+        "baseUrl": ".",
+        "paths": {
+            "~/*": ["../../core/*"]
+        }
+    },
+    "include": ["**/*.ts"]
 }
